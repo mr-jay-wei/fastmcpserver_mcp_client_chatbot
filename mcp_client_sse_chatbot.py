@@ -27,6 +27,7 @@ class MCPClient:
         self.model = "kimi-k2-0711-preview"  # 调用模型
         self.client = OpenAI(api_key=self.openai_api_key, base_url=self.base_url)
         self.session: Optional[ClientSession] = None  # Optional提醒用户该属性是可选的，可能为None
+        self.conversation_history = [] # 新增一个列表来存储历史
 
     async def connect_to_sse_server(self, server_url):
         """连接到MCP服务器并初始化会话"""
@@ -56,9 +57,10 @@ class MCPClient:
         )
         
         messages = [
-            {"role": "system", "content": system_prompt}, # 添加系统提示
-            {"role": "user", "content": query}
+            {"role": "system", "content": system_prompt}
         ]
+        messages.extend(self.conversation_history)
+        messages.append({"role": "user", "content": query})
         
         # 从服务器获取可用工具的描述
         tool_list_response = await self.session.list_tools()
@@ -112,6 +114,8 @@ class MCPClient:
             else:
                 # 如果LLM没有要求调用工具，说明它已经生成了最终答案
                 print(f"\n[LLM认为任务完成，生成最终回答]")
+                self.conversation_history.append({"role": "user", "content": query})
+                self.conversation_history.append({"role": "assistant", "content": response_message.content})
                 return response_message.content
 
     async def chat_loop(self):
