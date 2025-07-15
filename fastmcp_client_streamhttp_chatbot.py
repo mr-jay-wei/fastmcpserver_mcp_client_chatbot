@@ -39,7 +39,7 @@ class MCPClient:
 			}
 			for tool in tool_list_response]
 
-        print(f"\n已连接到服务器 (使用Streamable HTTP)，支持以下工具:", [tool.name for tool in tool_list_response])
+        # print(f"\n已连接到服务器 (使用Streamable HTTP)，支持以下工具:", [tool.name for tool in tool_list_response])
         
         return available_tools
 
@@ -107,7 +107,7 @@ class MCPClient:
                     print("正在退出...")
                     break
                 available_tools = await self.get_mcp_tools()
-                response = await self.process_query(query,available_tools)
+                response = await self.process_query(query, available_tools)
                 print(f"\n助手: {response}")
             except Exception as e:
                 print(f"发生错误: {str(e)}")
