@@ -1,32 +1,19 @@
 # conda env mcp_env ,Python版本 3.10.18
 # 关闭 proxy
 # 使用方法：用python 把server启动
-
-from fastmcp import FastMCP
-mcp = FastMCP(debug = True)
-
 from datetime import datetime
 import requests
+from fastmcp import FastMCP
 
-@mcp.tool()
-def calculate_bmi(weight_kg:float,height_m:float)->float:
-	"""通过给定的体重和身高计算BMI指数。
+mcp = FastMCP("weather")
 
-    Args:
-        weight_kg (float): 用户的体重，单位为公斤(kg)。
-        height_m (float): 用户的身高，单位为米(m)。
-
-    Returns:
-        float: 计算得出的BMI指数值。
-    """
-	return weight_kg / (height_m ** 2)
 
 @mcp.tool()
 def get_today():
-    """获取当前时间
+    """获取今天的日期。
 
     Returns:
-        str: 当前时间的字符串表示
+        str: 当前的日期字符串，格式为 'YYYY.MM.DD'。
     """
     return datetime.today().strftime('%Y.%m.%d')
 
@@ -49,4 +36,4 @@ def get_weather(city: str, date: str):
 
 
 if __name__ == '__main__':
-	mcp.run("sse",host = "0.0.0.0",port = 8082)
+    mcp.run('sse', host='0.0.0.0', port=8000, path='/toolmcp')

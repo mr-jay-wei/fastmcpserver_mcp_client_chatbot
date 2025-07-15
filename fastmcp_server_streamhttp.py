@@ -1,3 +1,7 @@
+# conda env mcp_env ,Python版本 3.10.18
+# 关闭 proxy
+# 使用方法：用python 把server启动
+
 from datetime import datetime
 import requests
 from fastmcp import FastMCP

@@ -1,12 +1,17 @@
-# conda env mcp_env ,Python版本 3.10.18
-# 关闭 proxy
-# 使用方法：先把server启动，然后启动chat_bot.py  : python chat_bot.py http://127.0.0.1:8083/my-custom-path
+'''
+conda env mcp_env ,Python版本 3.10.18
+关闭 proxy
+使用方法：先把server启动，然后启动chat_bot.py  : python chat_bot.py http://127.0.0.1:8083/my-custom-path
+
+MCP客户端 - 专注于list_tools() 和 call_tool() 两个核心方法
+再集成llm智能理解工具功能和参数返回具体使用参数
+'''
 
 import asyncio
 import json
 import sys
 
-from typing import List,Dict,Any
+from typing import List,Dict,Any,Optional
 from openai import OpenAI
 # 加载环境变量
 import os
@@ -14,6 +19,23 @@ from dotenv import load_dotenv, find_dotenv
 _ = load_dotenv(find_dotenv())
 
 from fastmcp import Client
+
+
+from pydantic import BaseModel
+# 请求/响应模型
+class ToolCallRequest(BaseModel):
+    tool_name: str
+    arguments: Dict[str, Any]
+
+class ToolCallResponse(BaseModel):
+    result: str
+    success: bool
+    error: Optional[str] = None
+
+class ToolsResponse(BaseModel):
+    tools: List[Dict[str, Any]]
+    count: int
+
 
 class MCPClient:
     def __init__(self, mcpserver_url: str):
@@ -27,7 +49,7 @@ class MCPClient:
     async def get_mcp_tools(self) -> List[Dict[str, Any]]:
         async with Client(self.mcpserver_url) as client:
             tool_list_response = await client.list_tools()
-
+        # print(f"tool_list_response:\n {tool_list_response}")
         available_tools = [
 			{
 				"type": "function",
@@ -83,7 +105,7 @@ class MCPClient:
                     print(f"[正在调用工具: {tool_name}，参数: {tool_args}]")
                     async with Client(self.mcpserver_url) as client:
                         result = await client.call_tool(tool_name, tool_args)
-
+                    # print(f"tool_call_result:\n {result}")
                     tool_output = result.content[0].text
                     print(f"[工具返回结果: {tool_output[:200]}...]")
                     messages.append(

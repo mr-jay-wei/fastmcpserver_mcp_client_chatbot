@@ -1,0 +1,57 @@
+{
+  "mcpServers": {
+    "github": {
+      "autoApprove": [],
+      "disabled": false,
+      "timeout": 60,
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "YOUR_GITHUB_TOKEN_HERE"
+      },
+      "type": "stdio"
+    },
+    "time": {
+      "autoApprove": [
+        "get_current_time"
+      ],
+      "disabled": false,
+      "timeout": 60,
+      "command": "python",
+      "args": [
+        "-m",
+        "mcp_server_time",
+        "--local-timezone=Asia/Shanghai"
+      ],
+      "type": "stdio"
+    },
+    "get_weather_server": {
+      "url": "http://localhost:8000/toolmcp",
+      "disabled": false,
+      "autoApprove": [],
+      "type": "sse"
+    },
+    "github.com/upstash/context7-mcp": {
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "@upstash/context7-mcp@latest"],
+      "disabled": false,
+      "autoApprove": [],
+      "type": "stdio"
+    },
+    "github.com/mendableai/firecrawl-mcp-server": {
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "firecrawl-mcp"],
+      "env": {
+        "FIRECRAWL_API_KEY": "YOUR_FIRECRAWL_API_KEY_HERE"
+      },
+      "disabled": false,
+      "autoApprove": [],
+      "type": "stdio"
+    }
+  }
+}
